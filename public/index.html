@@ -254,9 +254,7 @@
       </div>
       <div class="timer-display" id="timerDisplay">01:30</div>
       <div class="timer-controls">
-        <button class="btn-start" id="btnStart" onclick="startTimer()">▶ 开始</button>
-        <button class="btn-stop" id="btnStop" onclick="stopTimer()" style="display:none;">⏹ 停止</button>
-        <button class="btn-reset" onclick="resetTimer()">↺ 重置</button>
+        <button class="btn-start" onclick="startTimer()">▶ 开始</button>
       </div>
     </div>
   </div>
@@ -288,9 +286,6 @@
     ];
 
     let timerSeconds = 90;
-    let timerRemaining = 90;
-    let timerInterval = null;
-    let isRunning = false;
 
     // 渲染预设按钮
     function renderPresets() {
@@ -301,9 +296,7 @@
     }
 
     function setTimer(seconds) {
-      if (isRunning) return;
       timerSeconds = seconds;
-      timerRemaining = seconds;
       updateDisplay();
       document.querySelectorAll('.timer-presets button').forEach(b => {
         b.classList.toggle('active', parseInt(b.dataset.seconds) === seconds);
@@ -319,53 +312,17 @@
     }
 
     function updateDisplay() {
-      const m = Math.floor(timerRemaining / 60);
-      const s = timerRemaining % 60;
+      const m = Math.floor(timerSeconds / 60);
+      const s = timerSeconds % 60;
       const display = document.getElementById('timerDisplay');
       display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
-    // ==================== 计时器逻辑 ====================
+    // ==================== 启动 Shortcut 倒计时 ====================
     function startTimer() {
-      if (isRunning) return;
-      if (timerRemaining <= 0) resetTimer();
-      isRunning = true;
-      document.getElementById('timerDisplay').classList.add('running');
-      document.getElementById('btnStart').style.display = 'none';
-      document.getElementById('btnStop').style.display = 'inline-block';
-
-      timerInterval = setInterval(() => {
-        timerRemaining--;
-        updateDisplay();
-
-        if (timerRemaining <= 5) {
-          document.getElementById('timerDisplay').classList.add('alert');
-          // 尝试震动
-          if (navigator.vibrate) navigator.vibrate(500);
-        }
-
-        if (timerRemaining <= 0) {
-          stopTimer();
-          // 持续提醒
-          for (let i = 0; i < 5; i++) {
-            setTimeout(() => { if (navigator.vibrate) navigator.vibrate(500); }, i * 800);
-          }
-        }
-      }, 1000);
-    }
-
-    function stopTimer() {
-      isRunning = false;
-      clearInterval(timerInterval);
-      document.getElementById('timerDisplay').classList.remove('running', 'alert');
-      document.getElementById('btnStart').style.display = 'inline-block';
-      document.getElementById('btnStop').style.display = 'none';
-    }
-
-    function resetTimer() {
-      stopTimer();
-      timerRemaining = timerSeconds;
-      updateDisplay();
+      // x-callback-url: 把秒数传给 Shortcut
+      const url = `shortcuts://x-callback-url/run-shortcut?name=健身倒计时&input=text&text=${encodeURIComponent(timerSeconds)}`;
+      window.location.href = url;
     }
 
     // ==================== Tab 切换 ====================
