@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>健身伴侣</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+      padding-bottom: 100px;
+      min-height: 100vh;
+    }
+
+    /* ====== 计时器 ====== */
+    .timer-section { margin-bottom: 24px; }
+    .timer-display {
+      font-size: 72px;
+      font-weight: 700;
+      text-align: center;
+      color: #fff;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-display.running { color: #4ade80; }
+    .timer-display.alert { color: #f87171; animation: pulse 0.5s infinite; }
+    @keyframes pulse { 50% { opacity: 0.5; } }
+
+    .timer-presets {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .timer-presets button {
+      background: #1e1e1e;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .timer-presets button.active {
+      background: #4ade80;
+      color: #000;
+      border-color: #4ade80;
+      font-weight: 600;
+    }
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .timer-controls button {
+      padding: 12px 32px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-start { background: #4ade80; color: #000; }
+    .btn-stop { background: #f87171; color: #fff; }
+    .btn-reset { background: #333; color: #aaa; }
+
+    .custom-input {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .custom-input input {
+      width: 60px;
+      padding: 6px 10px;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+    }
+    .custom-input input:focus { outline: none; border-color: #4ade80; }
+    .custom-input span { color: #888; font-size: 14px; }
+
+    /* ====== Tab 导航 ====== */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #333;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tabs button.active {
+      color: #4ade80;
+      border-bottom-color: #4ade80;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ====== 训练记录 ====== */
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .exercise-card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .exercise-name { font-size: 16px; font-weight: 600; }
+    .exercise-actions { display: flex; gap: 8px; }
+    .exercise-actions button {
+      background: #333;
+      color: #aaa;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .exercise-actions button.danger { color: #f87171; }
+
+    .workout-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #222;
+    }
+    .workout-row:last-child { border: none; }
+
+    .add-workout-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .add-workout-row input {
+      width: 50px;
+      padding: 6px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      text-align: center;
+      font-size: 13px;
+    }
+    .add-workout-row input:focus { outline: none; border-color: #4ade80; }
+    .add-workout-row button {
+      background: #4ade80;
+      color: #000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .add-workout-row label { color: #888; font-size: 13px; }
+
+    /* ====== 添加新动作 ====== */
+    .add-exercise-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .add-exercise-row input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .add-exercise-row input:focus { outline: none; border-color: #4ade80; }
+    .add-exercise-row input::placeholder { color: #555; }
+    .add-exercise-row button {
+      background: #4ade80;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .recent-item {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .recent-name { font-weight: 500; }
+    .recent-detail { color: #888; font-size: 13px; }
+    .recent-time { color: #555; font-size: 12px; }
+
+    .empty-state {
+      text-align: center;
+      color: #555;
+      padding: 40px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== Tab 导航 ====== -->
+  <div class="tabs">
+    <button class="active" onclick="switchTab('timer')">⏱ 计时</button>
+    <button onclick="switchTab('workout')">💪 记录</button>
+    <button onclick="switchTab('history')">📋 历史</button>
+  </div>
+
+  <!-- ====== Tab: 计时器 ====== -->
+  <div id="tab-timer" class="tab-content active">
+    <div class="timer-section">
+      <div class="timer-presets" id="timerPresets"></div>
+      <div class="custom-input">
+        <span>自定义:</span>
+        <input type="number" id="customMin" value="1" min="0"> <span>分</span>
+        <input type="number" id="customSec" value="30" min="0" max="59"> <span>秒</span>
+        <button onclick="applyCustomTime()" style="background:#333;color:#aaa;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">设定</button>
+      </div>
+      <div class="timer-display" id="timerDisplay">01:30</div>
+      <div class="timer-controls">
+        <button class="btn-start" onclick="startTimer()">▶ 开始</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Tab: 记录 ====== -->
+  <div id="tab-workout" class="tab-content">
+    <div class="section-title">💪 动作列表</div>
+    <div id="exerciseList"></div>
+    <div class="add-exercise-row">
+      <input id="newExerciseName" placeholder="添加新动作（如：卧推）" onkeydown="if(event.key==='Enter') addExercise()">
+      <button onclick="addExercise()">添加</button>
+    </div>
+  </div>
+
+  <!-- ====== Tab: 历史 ====== -->
+  <div id="tab-history" class="tab-content">
+    <div class="section-title">📋 最近训练</div>
+    <div id="recentList"></div>
+  </div>
+
+  <script>
+    // ==================== 预设时间 ====================
+    const PRESETS = [
+      { label: '30s', seconds: 30 },
+      { label: '60s', seconds: 60 },
+      { label: '90s', seconds: 90 },
+      { label: '2min', seconds: 120 },
+      { label: '3min', seconds: 180 },
+    ];
+
+    let timerSeconds = 90;
+
+    // 渲染预设按钮
+    function renderPresets() {
+      const container = document.getElementById('timerPresets');
+      container.innerHTML = PRESETS.map(p => `
+        <button data-seconds="${p.seconds}" onclick="setTimer(${p.seconds})">${p.label}</button>
+      `).join('');
+    }
+
+    function setTimer(seconds) {
+      timerSeconds = seconds;
+      updateDisplay();
+      document.querySelectorAll('.timer-presets button').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.seconds) === seconds);
+      });
+    }
+
+    function applyCustomTime() {
+      const min = parseInt(document.getElementById('customMin').value) || 0;
+      const sec = parseInt(document.getElementById('customSec').value) || 0;
+      const total = min * 60 + sec;
+      if (total < 5) { alert('至少设置5秒'); return; }
+      setTimer(total);
+    }
+
+    function updateDisplay() {
+      const m = Math.floor(timerSeconds / 60);
+      const s = timerSeconds % 60;
+      const display = document.getElementById('timerDisplay');
+      display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // ==================== 启动 Shortcut 倒计时 ====================
+    function startTimer() {
+      // x-callback-url: 把秒数传给 Shortcut
+      const url = `shortcuts://x-callback-url/run-shortcut?name=健身倒计时&input=text&text=${encodeURIComponent(timerSeconds)}`;
+      window.location.href = url;
+    }
+
+    // ==================== Tab 切换 ====================
+    function switchTab(tab) {
+      document.querySelectorAll('.tabs button').forEach((b, i) => {
+        b.classList.toggle('active', ['timer','workout','history'][i] === tab);
+      });
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    // ==================== 动作 & 训练 ====================
+    async function fetchAPI(url, opts = {}) {
+      const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...opts
+      });
+      return res.json();
+    }
+
+    async function loadExercises() {
+      const exercises = await fetchAPI('/api/exercises');
+      const container = document.getElementById('exerciseList');
+      if (exercises.length === 0) {
+        container.innerHTML = '<div class="empty-state">还没有动作，添加一个吧</div>';
+        return;
+      }
+      container.innerHTML = '';
+      for (const ex of exercises) {
+        const workouts = await fetchAPI(`/api/workouts/${ex.id}`);
+        const card = document.createElement('div');
+        card.className = 'exercise-card';
+        card.innerHTML = `
+          <div class="exercise-header">
+            <span class="exercise-name">${ex.name}</span>
+            <div class="exercise-actions">
+              <button onclick="addWorkout(${ex.id})">+ 添组</button>
+              <button class="danger" onclick="deleteExercise(${ex.id})">删除</button>
+            </div>
+          </div>
+          ${workouts.length > 0 ? workouts.slice(0, 5).map(w => `
+            <div class="workout-row">
+              <span>${w.weight > 0 ? w.weight + 'kg' : ''} ${w.reps > 0 ? '× ' + w.reps : ''} ${w.note ? '- ' + w.note : ''}</span>
+              <span>${new Date(w.created_at).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+          `).join('') : '<div style="color:#555;font-size:13px;padding:4px 0;">暂无记录</div>'}
+          <div class="add-workout-row">
+            <input type="number" id="weight-${ex.id}" placeholder="kg" style="width:50px;">
+            <label>kg</label>
+            <input type="number" id="reps-${ex.id}" placeholder="次" style="width:50px;">
+            <label>次</label>
+            <input type="text" id="note-${ex.id}" placeholder="备注" style="width:80px;">
+            <button onclick="addWorkout(${ex.id})">✓</button>
+          </div>
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    async function addExercise() {
+      const input = document.getElementById('newExerciseName');
+      const name = input.value.trim();
+      if (!name) return;
+      await fetchAPI('/api/exercises', {
+        method: 'POST',
+        body: JSON.stringify({ name })
+      });
+      input.value = '';
+      loadExercises();
+    }
+
+    async function deleteExercise(id) {
+      if (!confirm('确定删除这个动作和所有记录？')) return;
+      await fetchAPI(`/api/exercises/${id}`, { method: 'DELETE' });
+      loadExercises();
+    }
+
+    async function addWorkout(exerciseId) {
+      const weight = parseFloat(document.getElementById(`weight-${exerciseId}`).value) || 0;
+      const reps = parseInt(document.getElementById(`reps-${exerciseId}`).value) || 0;
+      const note = document.getElementById(`note-${exerciseId}`).value?.trim() || '';
+      await fetchAPI('/api/workouts', {
+        method: 'POST',
+        body: JSON.stringify({ exercise_id: exerciseId, weight, reps, note })
+      });
+      document.getElementById(`weight-${exerciseId}`).value = '';
+      document.getElementById(`reps-${exerciseId}`).value = '';
+      document.getElementById(`note-${exerciseId}`).value = '';
+      loadExercises();
+    }
+
+    // ==================== 近期记录 ====================
+    async function loadRecent() {
+      const recent = await fetchAPI('/api/recent');
+      const container = document.getElementById('recentList');
+      if (recent.length === 0) {
+        container.innerHTML = '<div class="empty-state">还没有训练记录</div>';
+        return;
+      }
+      container.innerHTML = recent.map(r => `
+        <div class="recent-item">
+          <div>
+            <div class="recent-name">${r.exercise_name}</div>
+            <div class="recent-detail">${r.weight > 0 ? r.weight + 'kg' : ''} ${r.reps > 0 ? '× ' + r.reps : ''} ${r.note ? '- ' + r.note : ''}</div>
+          </div>
+          <div class="recent-time">${new Date(r.created_at).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== 初始化 ====================
+    renderPresets();
+    setTimer(90);
+    loadExercises();
+    loadRecent();
+  </script>
+</body>
+</html>
