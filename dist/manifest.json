@@ -1,0 +1,14 @@
+{
+  "name": "健身伴侣",
+  "short_name": "健身伴侣",
+  "description": "智能训练计时器 · 组间歇 + 训练记录",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    { "src": "./icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "./icon-512.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ]
+}

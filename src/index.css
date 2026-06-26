@@ -1,0 +1,283 @@
+/* Reset & Base */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: #0f0f0f;
+  color: #e0e0e0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 亮色模式 */
+body.light-mode {
+  background: #f5f5f5;
+  color: #1a1a1a;
+}
+
+body.light-mode input {
+  background: #fff;
+  border-color: #ddd;
+  color: #1a1a1a;
+}
+
+body.light-mode input:focus {
+  border-color: #4ade80;
+}
+
+body.light-mode .plan-card,
+body.light-mode .exercise-edit-card,
+body.light-mode .history-group,
+body.light-mode .calendar,
+body.light-mode .settings-group,
+body.light-mode .recent-item {
+  background: #fff;
+}
+
+body.light-mode .bottom-nav {
+  background: #fff;
+  border-top-color: #e0e0e0;
+}
+
+body.light-mode .nav-btn.active {
+  background: #e8f5e9;
+}
+
+body.light-mode .preset-btn {
+  background: #fff;
+  border-color: #ddd;
+  color: #555;
+}
+
+body.light-mode .workout-row,
+body.light-mode .history-row {
+  border-bottom-color: #eee;
+}
+
+body.light-mode .btn-quit {
+  color: #888;
+}
+
+body.light-mode .bg-work {
+  background: #d0e8ff;
+}
+
+body.light-mode .bg-rest {
+  background: #fff3e0;
+}
+
+body.light-mode .bg-alert {
+  background: #ffebee;
+}
+
+body.light-mode .bg-done {
+  background: #e8f5e9;
+}
+
+body.light-mode .workout-header h3 {
+  color: #1a1a1a;
+}
+
+body.light-mode .timer-ready h2,
+body.light-mode .timer-ring-svg text[fill="#fff"] {
+  fill: #1a1a1a;
+}
+
+body.light-mode .empty-state {
+  color: #999;
+}
+
+body.light-mode .btn-secondary {
+  background: #e0e0e0;
+  color: #555;
+}
+
+body.light-mode .btn-add-plan,
+body.light-mode .btn-add-exercise {
+  border-color: #ccc;
+  color: #999;
+}
+
+body.light-mode .preset-add-row {
+  color: #666;
+}
+
+body.light-mode .nav-btn {
+  color: #888;
+}
+
+body.light-mode .btn-mini {
+  background: #eee;
+  color: #666;
+}
+
+body.light-mode .other-tab-warning {
+  background: #fff3cd;
+  color: #333;
+}
+
+body.light-mode .timer-ring-svg text {
+  fill: #1a1a1a;
+}
+
+body.light-mode .timer-ready h2 {
+  color: #1a1a1a;
+}
+
+body.light-mode .timer-ready .phase-hint {
+  color: #999;
+}
+
+body.light-mode .toggle-switch.off {
+  background: #ccc;
+}
+
+body.light-mode .preset-btn {
+  background: #fff;
+  border-color: #ddd;
+  color: #555;
+}
+
+body.light-mode .preset-add {
+  background: #fff;
+  border-color: #ddd;
+  color: #999;
+}
+
+body.light-mode .preset-add-row {
+  color: #666;
+}
+
+body.light-mode .preset-add-row input {
+  background: #fff;
+  border-color: #ddd;
+  color: #1a1a1a;
+}
+
+body.light-mode .preset-add-row button {
+  background: #e0e0e0;
+  color: #555;
+}
+
+body.light-mode .preset-edit {
+  background: #fff;
+  border-color: #ddd;
+  color: #666;
+}
+
+body.light-mode .preset-edit-active {
+  background: #f87171;
+  color: #fff;
+  border-color: #f87171;
+}
+
+body.light-mode .preset-delete-mode {
+  background: #ffebee;
+  border-color: #f87171;
+  color: #f87171;
+}
+
+body.light-mode .picker-item {
+  color: #aaa;
+}
+
+body.light-mode .picker-item:hover {
+  background: #e8e8e8;
+  color: #555;
+}
+
+body.light-mode .picker-item.selected {
+  background: #4ade80;
+  color: #000;
+}
+
+body.light-mode .picker-colon {
+  color: #1a1a1a;
+}
+
+body.light-mode .picker-label {
+  color: #aaa;
+}
+
+body.light-mode .timer-toggles {
+  color: #888;
+}
+
+body.light-mode .plan-exercise-row {
+  border-bottom-color: #eee;
+}
+
+body.light-mode .calendar-cell.clickable {
+  color: #555;
+}
+
+body.light-mode .calendar-cell.clickable:hover {
+  background: #e8e8e8;
+}
+
+body.light-mode .history-group {
+  background: #fff;
+}
+
+body.light-mode .history-row {
+  color: #555;
+}
+
+body.light-mode .history-time {
+  color: #999;
+}
+
+body.light-mode .calendar-nav span {
+  color: #333;
+}
+
+body.light-mode .plan-card-header h3 {
+  color: #1a1a1a;
+}
+
+body.light-mode .setting-row span {
+  color: #333;
+}
+
+body.light-mode .settings-group p {
+  color: #999;
+}
+
+body.light-mode .settings-group h3 {
+  color: #666;
+}
+
+input, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  transition: all 0.15s;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+input {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4ade80;
+}
