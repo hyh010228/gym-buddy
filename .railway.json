@@ -3,7 +3,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "node server/index.js",
+    "startCommand": "npx serve dist -s -l $PORT",
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE"
   }
